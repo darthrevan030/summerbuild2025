@@ -1,4 +1,4 @@
-# TravelApp - Flight & Hotel Search Platform
+# Trippy Find - Flight & Hotel Search Platform
 
 ![System Architecture 4-Tier](assets/images/Summer_build_diagram.png)
 
