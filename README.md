@@ -1,116 +1,134 @@
-# Trippy Find - Flight & Hotel Search Platform
+# Trippy Find — Travel Planning Platform
 
-![System Architecture 4-Tier](assets/images/Summer_build_diagram.png)
+A full-stack travel platform that lets you search flights and hotels, compare real-time prices, and plan multi-destination trips — all in one place. Built in under 24 hours for SummerBuild 2025, winning the Gold Award 🥇.
 
-[![🎥 Program Demo](https://img.youtube.com/vi/nVTvcB19b_4/0.jpg)](https://youtu.be/nVTvcB19b_4)
+💻 **Repo:** [github.com/darthrevan030/summerbuild2025](https://github.com/darthrevan030/summerbuild2025)  
+🏆 **Devpost:** [devpost.com/software/404-not-found-insert-app-name-here](https://devpost.com/software/404-not-found-insert-app-name-here)  
+🎥 **Demo:** [youtu.be/nVTvcB19b_4](https://youtu.be/nVTvcB19b_4)
 
-🎥 Program Demo^
+---
 
-[🚀 Devpost](https://devpost.com/software/404-not-found-insert-app-name-here)
+## The Idea
 
-A modern travel planning application that allows users to search for flights and hotels, save favorites, and manage their travel preferences. Built for Team 404 Not Found's SummerBuild 2025 Hackathon project.
+A friend flew from India to Singapore via a ridiculous detour because it was the cheapest option. Most flight search engines optimise purely for price — but cheapest doesn't always mean best. We built Trippy to let users actually balance cost vs. journey time, not just sort by fare.
 
-## 🚀 Features
+---
 
-### Core Functionality
+## Features
 
-- **Flight Search**: Search for flights between airports with departure/return dates
-- **Hotel Search**: Find hotels by destination with check-in/check-out dates
-- **Favorites System**: Save and manage favorite flights and hotels
-- **User Profiles**: Manage travel preferences and personal information
-- **Search History**: Track previous searches for easy access
-- **Responsive Design**: Works on desktop and mobile devices
+- **Flight search** across 400+ airlines with real-time pricing via Amadeus API
+- **Hotel search** at the destination — flights and accommodation in one platform
+- **Cost vs. time filter** — custom sorting logic to balance price and journey duration
+- **Custom IATA lookup** — Amadeus free tier doesn't resolve airport names, so we built our own city → IATA code system backed by Supabase
+- **Save favourites** for later comparison
+- **Search history** — track previous searches for easy access
+- **Caching layer** to reduce redundant API calls
+- **Mobile responsive** across all devices
 
 ### Search Capabilities
 
-- Real-time flight and hotel availability
 - Filter by price, stops, airlines, and departure times
-- Display detailed flight information (duration, stops, airline details)
-- Show hotel ratings, amenities, and pricing
+- Detailed flight info — duration, layovers, airline details
+- Hotel ratings, amenities, and pricing
+- Return date support and travel class selection
+- Real-time availability for both flights and hotels
 
-## 🏗️ Architecture
+---
+
+## Architecture
+
+Trippy uses a 4-tier architecture:
+
+```
+┌─────────────────────────────────────────────┐
+│              CLIENT (Browser)                │
+│         React + Tailwind CSS                 │
+│              Port 3000                       │
+└─────────────────┬───────────────────────────┘
+                  │ HTTP / REST
+┌─────────────────▼───────────────────────────┐
+│           API LAYER (Express)                │
+│         Node.js + Express.js                 │
+│              Port 8080                       │
+│  /api/flights  /api/hotels  /api/users       │
+└──────┬──────────────────────┬────────────────┘
+       │                      │
+┌──────▼──────┐     ┌─────────▼──────────────┐
+│  AMADEUS    │     │       SUPABASE          │
+│  API        │     │  User data, favourites  │
+│  Flights +  │     │  search history,        │
+│  Hotels     │     │  IATA code lookup       │
+└─────────────┘     └────────────────────────┘
+```
 
 ### Frontend (React)
-
-- **Location**: [`frontend/`](frontend/)
-- **Main Component**: [`src/App.js`](frontend/src/App.js)
-- **Technologies**: React, Tailwind CSS, Lucide Icons
-- **Port**: 3000 (development)
+- **Location:** `frontend/`
+- **Entry:** `frontend/src/App.js`
+- **Technologies:** React, Tailwind CSS, Lucide Icons
+- **Port:** 3000
 
 ### Backend (Node.js/Express)
+- **Location:** `backend/`
+- **Entry:** `backend/server.js`
+- **Technologies:** Express.js, Supabase, Amadeus API
+- **Port:** 8080
 
-- **Location**: [`backend/`](backend/)
-- **Main Server**: [`server.js`](backend/server.js)
-- **Technologies**: Express.js, Supabase, Amadeus API
-- **Port**: 8080 (default)
+---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 summerbuild2025/
-├── frontend/                 # React frontend application
+├── frontend/
 │   ├── src/
-│   │   ├── App.js           # Main application component
-│   │   ├── index.js         # React entry point
-│   │   └── App.test.js      # Test file
-│   ├── public/              # Static files
-│   └── package.json         # Frontend dependencies
+│   │   ├── App.js              # Main application component
+│   │   ├── index.js            # React entry point
+│   │   └── App.test.js
+│   ├── public/
+│   └── package.json
 │
-├── backend/                 # Node.js backend API
-│   ├── server.js           # Main server file
-│   ├── server-minimal.js   # Minimal server for testing
-│   ├── test-server.js      # Test server configuration
-│   ├── controllers/        # API controllers
-│   │   ├── flightController.js
-│   │   ├── hotelController.js
-│   │   ├── routeController.js
-│   │   └── userController.js
-│   ├── routes/             # API routes
-│   │   ├── flights.js
-│   │   ├── hotels.js
-│   │   ├── routes.js
-│   │   └── users.js
-│   ├── services/           # External service integrations
-│   │   ├── amadeusService.js
-│   │   ├── supabaseService.js
-│   │   ├── cacheService.js
-│   │   └── routeCalculatorService.js
-│   └── utils/              # Utility functions
-│       └── envChecker.js
-│
-└── README.md               # This file
+└── backend/
+    ├── server.js               # Main server
+    ├── server-minimal.js       # Minimal server for testing
+    ├── test-server.js
+    ├── controllers/
+    │   ├── flightController.js
+    │   ├── hotelController.js
+    │   ├── routeController.js
+    │   └── userController.js
+    ├── routes/
+    │   ├── flights.js
+    │   ├── hotels.js
+    │   ├── routes.js
+    │   └── users.js
+    ├── services/
+    │   ├── amadeusService.js       # Amadeus API integration
+    │   ├── supabaseService.js      # Supabase integration
+    │   ├── cacheService.js         # Caching layer
+    │   └── routeCalculatorService.js
+    └── utils/
+        └── envChecker.js
 ```
 
-## 🛠️ Installation & Setup
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm or yarn
-- Amadeus API credentials (optional, for full functionality)
-- Supabase project (optional, for data persistence)
+- Node.js 14+
+- Amadeus API credentials — [get them free](https://developers.amadeus.com)
+- Supabase project — [supabase.com](https://supabase.com)
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
-
 ```bash
 cd backend
-```
-
-2. Install dependencies:
-
-```bash
 npm install
-```
-
-3. Create environment file:
-
-```bash
 cp .env.example .env
 ```
 
-4. Configure environment variables in `.env`:
+Configure `backend/.env`:
 
 ```env
 PORT=8080
@@ -119,189 +137,144 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
 AMADEUS_CLIENT_ID=your_amadeus_client_id
 AMADEUS_CLIENT_SECRET=your_amadeus_client_secret
+CORS_ORIGIN=http://localhost:3000
 ```
 
-5. Start the backend server:
-
 ```bash
-npm start
-# or for development with auto-reload
 npm run dev
 ```
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
-
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-
-```bash
 npm install
 ```
 
-3. Start the development server:
+Configure `frontend/.env`:
+
+```env
+REACT_APP_API_URL=http://localhost:8080
+```
 
 ```bash
 npm start
 ```
 
-The application will open at `http://localhost:3000`
-
-## 🌐 API Endpoints
-
-### Flight Routes
-
-- `GET /api/flights/search` - Search for flights
-- `GET /api/flights/offers` - Get flight offers
-- `GET /api/flights/airports` - Airport reference data
-
-### Hotel Routes
-
-- `GET /api/hotels/search` - Search for hotels
-- `GET /api/hotels/location` - Hotels near coordinates
-- `GET /api/hotels/city/{city}` - Hotels in specific city
-
-### User Routes
-
-- `GET /api/users/{id}/locations` - User saved locations
-- `POST /api/users/{id}/locations` - Save user location
-- `GET /api/users/{id}/favorites` - User favorites
-- `POST /api/users/{id}/favorites` - Add to favorites
-- `GET /api/users/{id}/profile` - User profile
-- `PUT /api/users/{id}/profile` - Update user profile
-
-### System Routes
-
-- `GET /health` - Health check
-- `GET /api` - API documentation
-- `GET /test` - Server test endpoint
-
-## 🔧 Configuration
-
-### Environment Variables
-
-The application uses the following environment variables:
-
-#### Backend ([`backend/.env`](backend/.env))
-
-```env
-PORT=8080                    # Server port
-NODE_ENV=development         # Environment mode
-SUPABASE_URL=               # Supabase project URL
-SUPABASE_ANON_KEY=          # Supabase anonymous key
-AMADEUS_CLIENT_ID=          # Amadeus API client ID
-AMADEUS_CLIENT_SECRET=      # Amadeus API client secret
-CORS_ORIGIN=                # CORS allowed origins
-```
-
-#### Frontend ([`frontend/.env`](frontend/.env))
-
-```env
-REACT_APP_API_URL=http://localhost:8080  # Backend API URL
-```
-
-## 🧪 Testing
-
-### Backend Tests
-
-```bash
-cd backend
-npm test
-```
-
-### Frontend Tests
-
-```bash
-cd frontend
-npm test
-```
-
-### Manual Testing
-
-- Health check: `http://localhost:8080/health`
-- API documentation: `http://localhost:8080/api`
-- Database test: `http://localhost:8080/test-db`
-
-## 🚀 Deployment
-
-### Frontend Deployment
-
-```bash
-cd frontend
-npm run build
-```
-
-The build files will be created in the `build/` directory.
-
-### Backend Deployment
-
-The backend can be deployed to any Node.js hosting platform. Ensure environment variables are properly configured in production.
-
-## 🔌 External Services
-
-### Amadeus API Integration
-
-- **Purpose**: Flight and hotel search functionality
-- **Service**: [`amadeusService.js`](backend/services/amadeusService.js)
-- **Setup**: Requires API credentials from [Amadeus for Developers](https://developers.amadeus.com/)
-
-### Supabase Integration
-
-- **Purpose**: User data persistence, favorites, search history
-- **Service**: [`supabaseService.js`](backend/services/supabaseService.js)
-- **Setup**: Requires project setup at [Supabase](https://supabase.com/)
-
-## 🎨 UI Components
-
-The frontend uses a modern design with:
-
-- **Icons**: Lucide React icons
-- **Styling**: Tailwind CSS for responsive design
-- **Components**: Search forms, result cards, navigation tabs
-- **Features**: Dark/light themes, mobile responsiveness
-
-## 📝 Development
-
-### Adding New Features
-
-1. **Backend**: Create controllers in [`controllers/`](backend/controllers/) and routes in [`routes/`](backend/routes/)
-2. **Frontend**: Add components in [`src/App.js`](frontend/src/App.js) or create separate component files
-3. **API Integration**: Use the [`apiCall`](frontend/src/App.js) function for backend communication
-
-### Code Structure
-
-- **Controllers**: Handle business logic and API responses
-- **Services**: External API integrations and data processing
-- **Routes**: Express route definitions and middleware
-- **Utils**: Helper functions and utilities
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **CORS Errors**: Check CORS configuration in [`server.js`](backend/server.js)
-2. **API Not Found**: Verify backend server is running on port 8080
-3. **Database Errors**: Check Supabase configuration and network connectivity
-4. **Search Not Working**: Verify Amadeus API credentials
-
-### Debug Endpoints
-
-- Environment check: Run [`envChecker.js`](backend/utils/envChecker.js)
-- Server status: `GET /health`
-- Database connectivity: `GET /test-db`
-
-## 👥 Team
-
-**Team 404 Not Found** - SummerBuild 2025 Hackathon
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-For questions or support, please refer to the API documentation at `http://localhost:8080/api` when the backend server is running.
+## API Reference
+
+### Flights
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/flights/search` | Search for flights |
+| GET | `/api/flights/offers` | Get flight offers |
+| GET | `/api/flights/airports` | Airport reference data |
+
+### Hotels
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/hotels/search` | Search for hotels |
+| GET | `/api/hotels/location` | Hotels near coordinates |
+| GET | `/api/hotels/city/{city}` | Hotels in a specific city |
+
+### Users
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/users/{id}/locations` | Get saved locations |
+| POST | `/api/users/{id}/locations` | Save a location |
+| GET | `/api/users/{id}/favorites` | Get favourites |
+| POST | `/api/users/{id}/favorites` | Add to favourites |
+| GET | `/api/users/{id}/profile` | Get user profile |
+| PUT | `/api/users/{id}/profile` | Update user profile |
+
+### System
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Health check |
+| GET | `/api` | API documentation |
+| GET | `/test` | Server test |
+| GET | `/test-db` | Database connectivity check |
+
+---
+
+## Notable Implementation Details
+
+### Custom IATA Code Lookup
+
+The Amadeus free tier only accepts IATA codes — it doesn't resolve city names. We built a custom lookup system mapping natural language queries like "Singapore" or "London" to the correct IATA codes, stored in Supabase.
+
+### Cost vs. Time Sorting
+
+Custom sorting logic that scores flights on a weighted combination of price and total journey time. Users can adjust the weighting to prioritise whichever matters more.
+
+### Caching Layer
+
+Repeat queries are served from `cacheService.js` to reduce Amadeus API calls and stay within free tier rate limits.
+
+---
+
+## External Services
+
+### Amadeus API
+- **Purpose:** Real-time flight and hotel search
+- **Service file:** `backend/services/amadeusService.js`
+- **Setup:** [developers.amadeus.com](https://developers.amadeus.com)
+
+### Supabase
+- **Purpose:** User data, favourites, search history, IATA code lookup table
+- **Service file:** `backend/services/supabaseService.js`
+- **Setup:** [supabase.com](https://supabase.com)
+
+---
+
+## Testing
+
+```bash
+# Backend
+cd backend && npm test
+
+# Frontend
+cd frontend && npm test
+
+# Manual checks
+curl http://localhost:8080/health
+curl http://localhost:8080/test-db
+```
+
+---
+
+## Challenges
+
+- **Amadeus free tier limitations** — missing airport name resolution required building a custom lookup system from scratch
+- **Routing configuration** — handling multiple concurrent API integrations with clean dynamic routing was the steepest learning curve
+- **Competing with Google Flights** — forced us to focus on a genuinely differentiated feature (cost/time balance) rather than trying to match on breadth
+
+---
+
+## What's Next
+
+- Direct booking via Amadeus enterprise API
+- Seasonal pricing insights and fare drop alerts
+- Real-time price trackers
+- Visual maps showing flight paths and layover locations
+- User reviews, lounge access, and baggage info
+
+---
+
+## Team
+
+Built by [Samarth Bhatia](https://github.com/darthrevan030) and [Ming Yang Ang](https://github.com/AngMingYang) as Team 404 Not Found at SummerBuild 2025.
+
+---
+
+## License
+
+MIT
